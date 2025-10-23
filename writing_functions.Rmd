@@ -1,0 +1,104 @@
+---
+title: "writing_functions"
+output: html_document
+date: "2025-10-23"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(rvest)
+library(readxl)
+set.seed(1)
+
+knitr::opts_chunk$set(
+  echo=TRUE,
+  warning = FALSE
+)
+```
+
+every one loves z scores
+
+```{r}
+x_vec=rnorm(20, 10,2)
+(x_vec - mean(x_vec))/sd(x_vec)
+
+```
+writing a function to compute Z score.
+
+```{r}
+z_score = function(x) {
+  
+  if(!is.numeric(x)) {
+    stop("The input x should be numeric")
+  }
+  
+  if(length(x)<5){
+    
+    stop("Only compute z scores when the input has 5 or more numbers")
+  }
+  
+  z=(x - mean(x))/sd(x)
+  
+  z
+  
+}
+```
+
+let's try our function
+
+```{r}
+z_score(x=x_vec)
+num_vec=rnorm(123,14,0.4)
+z_score(x=num_vec)
+```
+
+let's break our function
+```{r error=TRUE}
+z_score(3)
+z_score("ss")
+```
+## Let's compute some stuff
+
+let's compute and return the mean and sd of a numeric vector
+
+```{r}
+mean_sd=function(x){
+  
+   if(!is.numeric(x)) {
+    stop("The input x should be numeric")
+  }
+  
+  if(length(x)<5){
+    stop("Only compute mean and standard deviation when the input has 5 or more numbers")
+  }
+  
+  mean_x=mean(x, na.rm=TRUE)
+  sd_x=sd(x, na.rm=TRUE)
+  
+  tibble(mean = mean_x, sd= sd_x)
+  
+  
+}
+
+mean_sd(x=x_vec)
+
+```
+
+## make up data
+
+```{r}
+sim_df=
+  tibble(
+    x=rnorm(30,3,1)
+  )
+
+
+sim_df |> 
+  summarize(
+    mu_hat=mean(x),
+    sigma_hat=sd(x)
+  )
+```
+
+
+
