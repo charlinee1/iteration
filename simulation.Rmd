@@ -1,0 +1,44 @@
+---
+title: "simulation"
+output: html_document
+date: "2025-10-30"
+---
+
+
+```{r}
+sim_mean_sd = function(n, mu = 2, sigma = 3) {
+  
+  sim_data = tibble(
+    x = rnorm(n, mean = mu, sd = sigma),
+  )
+  
+  sim_data |> 
+    summarize(
+      mu_hat = mean(x),
+      sigma_hat = sd(x)
+    )
+}
+```
+
+can I verify the central limit theorem
+
+```{r}
+library(tidyverse)
+output=vector("list", length = 100)
+for (i in 1:100){
+  
+  output[[i]]=sim_mean_sd(30)
+
+}
+
+output %>% 
+  bind_rows() %>% 
+  ggplot(aes(x=mu_hat))+
+  geom_density()
+```
+
+
+
+
+
+
