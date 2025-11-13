@@ -1,12 +1,14 @@
 ---
 title: "iteration"
-output: git_document
+output: github_document
 date: "2025-11-13"
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(rvest)
+library(p8105.datasets)
+data("weather_df")
 ```
 
 ## lists 
@@ -76,6 +78,107 @@ output[[i]]=mean_sd(list_norms[[i]])
 }
 
 output
+```
+## let's try maps
+
+```{r}
+output=map(list_norms, mean_sd)
+output2=map(list_norms, median)
+output3=map(list_norms, IQR)
+```
+```{r}
+output4=map_df(list_norms, mean_sd, .id="input")
+output4
+```
+
+## list columns
+```{r}
+lcol_df=
+  tibble(
+    name=c("a","b","c","d"),
+    samp=list_norms
+  )
+
+```
+
+
+```{r}
+lcol_df %>% pull(name)
+lcol_df %>% pull(samp)
+
+lcol_df%>%
+  filter(name=="a")
+```
+let's try some operations
+```{r}
+mean_sd(lcol_df$samp[[1]])
+```
+can I just map?
+```{r}
+map(lcol_df$samp, mean_sd)
+```
+can I add a list column?
+
+```{r}
+lcol_df=
+  lcol_df%>%
+  mutate(summary=map_df(samp, mean_sd),
+         medians=map(samp,median))
+
+lcol_df
+```
+
+## weather data
+
+Get our list columns
+```{r}
+weather_nest=
+  weather_df %>%
+   nest(data = date:tmin)
+```
+
+
+```{r}
+weather_nest%>%pull(name)
+weather_nest%>%pull(data)
+
+```
+
+Suppose I want to regress `tmax` on `tmin` for each station.
+```{r}
+lm(tmax~tmin, weather_nest$data[[1]])
+lm(tmax~tmin, weather_nest$data[[2]])
+lm(tmax~tmin, weather_nest$data[[3]])
+```
+let's write a function   
+```{r}
+weather_lm=function(df) {
+  
+  lm(tmax~tmin, data=df)
+  
+}
+
+output=vector("list",3)
+for (i in 1:3){
+  output[[i]]=weather_lm(weather_nest$data[[i]])
+}
+
+output
+```
+what about map?
+
+```{r}
+map(weather_nest$data,weather_lm)
+
+```
+
+what about map in a list column??
+```{r}
+weather_nest=
+  weather_nest%>%
+  mutate(models=map(data, weather_lm))
+
+weather_nest$models
 ```
 
 
