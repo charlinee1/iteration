@@ -39,7 +39,7 @@ z_score = function(x) {
   
   z=(x - mean(x))/sd(x)
   
-  z
+  return(z)
   
 }
 ```
@@ -80,18 +80,19 @@ mean_sd=function(x){
   
 }
 
-mean_sd(x=x_vec)
+x_vec1=rnorm(1000)
+mean_sd(x=x_vec1)
 
 ```
 
 ## make up data
 
-data simulation
+data simulation 
 
 ```{r}
 sim_df=
   tibble(
-    x=rnorm(30,3,1)
+    x=rnorm(100,4,3)
   )
 
 sim_df |> 
@@ -125,8 +126,7 @@ let's run this function
 
 
 ```{r}
-sim_md(n=30)
-
+sim_md(100,6,5)
 ```
 
 don't forget documentation
@@ -135,14 +135,14 @@ Import the LoTR data
 
 ```{r}
 
-fellow_r <- read_excel("data/LotR_Words.xlsx", range = "B3:D6") |> 
+fellow_r <- read_excel("LotR_Words.xlsx", range = "B3:D6") |> 
   mutate(movie = "Fellow")
 
 
-two <- read_excel("data/LotR_Words.xlsx", range = "F3:H6") |> 
+two <- read_excel("LotR_Words.xlsx", range = "F3:H6") |> 
   mutate(movie = "two")
 
-return_k <- read_excel("data/LotR_Words.xlsx", range = "J3:L6") |> 
+return_k <- read_excel("LotR_Words.xlsx", range = "J3:L6") |> 
   mutate(movie = "Return")
 
   
@@ -151,7 +151,7 @@ return_k <- read_excel("data/LotR_Words.xlsx", range = "J3:L6") |>
 ```{r}
 
 data_import=function(cell_range, movie_title){
-  df=read_excel("data/LotR_Words.xlsx", range=cell_range) |> 
+  df=read_excel("LotR_Words.xlsx", range=cell_range) |> 
     mutate(movie=movie_title)
   df
 }
@@ -159,6 +159,8 @@ data_import=function(cell_range, movie_title){
 fellowship= data_import("B3:D6", "Fellowship")
 two=data_import("F3:H6", "Two tower")
 ```
+
+
 ```{r}
 
 
@@ -208,7 +210,37 @@ data =
 
 ns_import(nsduh_html, table_num=1)
 
-
-
 ```
+
+
+## mean scoping example
+```{r}
+f=function(x){
+  z=x+y
+  z
+}
+
+x=1
+y=2
+f(x=y)
+```
+
+## function as arguments
+```{r}
+my_summary=function(x, summ_func){
+  summ_func(x)
+  
+}
+
+x_vec=rnorm(100, 3,7)
+mean(x_vec)
+median(x_vec)
+
+my_summary(x_vec, IQR)
+```
+
+
+
+
+
 
