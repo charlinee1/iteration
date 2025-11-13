@@ -1,29 +1,86 @@
 ---
 title: "iteration"
-output: html_document
+output: git_document
 date: "2025-11-13"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rvest)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+## lists 
+It can store a lot of things
+```{r}
+l=list(vec_numeric=5:8,
+vec_logic=c("True","True","True","False" ),
+mat=matrix(1:8, nrow=2, ncol=4),
+summary=summary(rnorm(100))
+)
+```
+```{r}
+l
+l$vec_numeric
+l[[1]]
+mean(l[["vec_numeric"]])
 ```
 
-## Including Plots
+## `for` loop
 
-You can also embed plots, for example:
+```{r}
+list_norms = 
+  list(
+    a = rnorm(20, 3, 1),
+    b = rnorm(20, 0, 5),
+    c = rnorm(40, 10, .2),
+    d = rnorm(20, -3, 1)
+  )
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```
+## pause and get my old function
+
+```{r}
+mean_sd=function(x){
+  
+   if(!is.numeric(x)) {
+    stop("The input x should be numeric")
+  }
+  
+  if(length(x)<3){
+    stop("Only compute mean and standard deviation when the input has 3 or more numbers")
+  }
+  
+  mean_x=mean(x, na.rm=TRUE)
+  sd_x=sd(x, na.rm=TRUE)
+  
+  tibble(mean = mean_x, sd= sd_x)
+  
+}
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+I can apply that function to each element
+```{r}
+mean_sd(list_norms[[1]])
+mean_sd(list_norms[[2]])
+mean_sd(list_norms[[3]])
+mean_sd(list_norms[[4]])
+```
+let's use `for` loop
+```{r}
+output= vector("list", length=4)
+
+for (i in 1:4){
+output[[i]]=mean_sd(list_norms[[i]])  
+  
+}
+
+output
+```
+
+
+
+
+
+
+
